@@ -1,0 +1,47 @@
+body {
+    background-color: #555555;
+    min-height: 100%;
+    width: 100%;
+    margin: 0%;
+}
+
+div {
+    padding: 1%;
+}
+
+p {
+    display: inline-block;
+}
+
+textarea {
+    display: inline-block;
+    height: fit-content;
+    width: fit-content;
+    resize: none;
+    text-align: center;
+}
+
+button {
+    background-color: white;
+    display: block;
+}
+
+#legend {
+    background-color: #444444;
+    color: white;
+    height: 100%;
+    max-width: 100%;
+}
+
+#graph-pane {
+    background-color: grey;
+    color: white;
+    min-height: 66%;
+}
+
+#options-panel {
+    background-color: #444444;
+    color: white;
+    min-height: 33%;
+    text-align: right;
+}
