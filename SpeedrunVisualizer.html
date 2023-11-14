@@ -16,82 +16,26 @@
     <div id="graph-pane">
         <h1>Graph</h1>
     </div>
-    <div id=""options-panel">
-      <div id="info-panel">
-        <textarea id="data-box"></textarea>
-      </div>
-      <div id="date-panel">
-          <Button>Refresh Graph</Button>
-          <h3>Date Range</h3>
-          <p>from</p>
-          <textarea class="date-box" id="month1">1</textarea>
-          <p>/</p>
-          <textarea class="date-box" id="day1">1</textarea>
-          <p>/</p>
-          <textarea class="date-box" id="year1">16</textarea>
-          <br>
-          <p>to</p>
-          <textarea class="date-box" id="month2">12</textarea>
-          <p>/</p>
-          <textarea class="date-box" id="day2">31</textarea>
-          <p>/</p>
-          <textarea class="date-box" id="year2">23</textarea>
-      </div>
+    <textarea id="data-box"></textarea>
+    <div id="date-panel">
+        <Button>Refresh Graph</Button>
+        <h3>Date Range</h3>
+        <p>from</p>
+        <textarea class="date-box" id="month1">1</textarea>
+        <p>/</p>
+        <textarea class="date-box" id="day1">1</textarea>
+        <p>/</p>
+        <textarea class="date-box" id="year1">16</textarea>
+        <br>
+        <p>to</p>
+        <textarea class="date-box" id="month2">12</textarea>
+        <p>/</p>
+        <textarea class="date-box" id="day2">31</textarea>
+        <p>/</p>
+        <textarea class="date-box" id="year2">23</textarea>
     </div>
-    <script type="text/javascript">
-      // based on https://d3-graph-gallery.com/graph/scatter_basic.html
+    <script type="text/javascript" src="SpeedrunFunctions.js" onload="displayGraph()">
 
-        // set the dimensions and margins of the graph
-        var margin = {top: 10, right: 30, bottom: 30, left: 60},
-            width = 460 - margin.left - margin.right,
-            height = 400 - margin.top - margin.bottom;
-        
-        // append the svg object to the body of the page
-        var svg = d3.select("#graph-pane")
-          .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-          .append("g")
-            .attr("transform",
-                  "translate(" + margin.left + "," + margin.top + ")");
-        
-        //Read the data
-        d3.json("https://www.speedrun.com/api/v1/leaderboards/smw/category/7kjrn323", function(data) {
-          
-          var minYear = document.getElementById("year1").value
-          var maxYear = document.getElementById("year2").value
-          var minMonth = document.getElementById("month1").value
-          var maxMonth = document.getElementById("month2").value
-          var minDay = document.getElementById("day1").value
-          var maxDay = document.getElementById("day2").value
-
-          // Add X axis
-          var x = d3.scaleTime()
-            .domain([new Date(minYear+"-"+minMonth+"-"+minDay), new Date(maxYear+"-"+maxMonth+"-"+maxDay)])
-            .range([0, width]);
-          svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x));
-        
-          // Add Y axis
-          var y = d3.scaleTime()
-            .domain([0, d3.max(data.runs, d => d.run.times.primary_t)])
-            .range([height, 0]);
-          svg.append("g")
-            .call(d3.axisLeft(y));
-        
-          // Add dots
-          svg.append('g')
-            .selectAll("circle")
-            .data(data.runs)
-            .enter()
-            .append("circle")
-              .attr("cx", function (d) { return x(d.run.date); } )
-              .attr("cy", function (d) { return y(d.run.times.primary_t); } )
-              .attr("r", 1.5)
-              .style("fill", "#ffffff")
-        
-        })
     </script>
 </body>
 </html>
