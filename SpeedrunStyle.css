@@ -13,17 +13,18 @@ p {
     display: inline-block;
 }
 
-textarea {
+button {
+    background-color: white;
+    display: block;
+}
+
+.date-box {
     display: inline-block;
     height: fit-content;
     width: fit-content;
     resize: none;
     text-align: center;
-}
-
-button {
-    background-color: white;
-    display: block;
+    max-lines: 1;
 }
 
 #legend {
@@ -43,5 +44,24 @@ button {
     background-color: #444444;
     color: white;
     min-height: 33%;
+    max-width: 66%;
     text-align: right;
+    padding: 0%;
+}
+
+#date-panel {
+    background-color: #444444;
+    color: white;
+    min-height: 33%;
+    max-width: 66%;
+    text-align: right;
+    display: inline-block;
+}
+
+#info-panel {
+    background-color: #444444;
+    color: white;
+    width: 33%;
+    min-height: 33%;
+    display: inline-flex;
 }
