@@ -20,8 +20,8 @@ button {
 
 .date-box {
     display: inline-block;
-    height: fit-content;
-    width: fit-content;
+    height: 50%;
+    width: 5%;
     resize: none;
     text-align: center;
     max-lines: 1;
@@ -40,28 +40,18 @@ button {
     min-height: 66%;
 }
 
-#options-panel {
-    background-color: #444444;
-    color: white;
-    min-height: 33%;
-    max-width: 66%;
-    text-align: right;
-    padding: 0%;
+#data-box {
+    width: 32%;
+    height: 33%;  
+    max-height: 33%;
 }
 
 #date-panel {
     background-color: #444444;
     color: white;
-    min-height: 33%;
-    max-width: 66%;
+    max-height: 33%;
+    width: 67%;
     text-align: right;
     display: inline-block;
-}
-
-#info-panel {
-    background-color: #444444;
-    color: white;
-    width: 33%;
-    min-height: 33%;
-    display: inline-flex;
+    padding: 10px;
 }
