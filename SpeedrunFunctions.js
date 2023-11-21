@@ -151,7 +151,13 @@ function populateGraph(){
 
 // called upon module creation
 function populateGameDropdown(moduleId) {
-  d3.json("https://www.speedrun.com/api/v1/games?_bulk=yes", function(data) {
+  var apiString = "https://www.speedrun.com/api/v1/games?_bulk=yes&max=1000";
+  var searchText = d3.select("#game-searchbar").property("value");
+  if(searchText.length > 0){
+    apiString += `&name=${searchText}&orderby=similarity`;
+  }
+
+  d3.json(apiString, function(data) {
     // populate game dropdown with game titles & ids
     d3.select("#"+moduleId)
       .select(".game-dropdown")
@@ -169,10 +175,6 @@ function populateGameDropdown(moduleId) {
 function populateCategoryDropdown(moduleId) {
   var gameDropdown = d3.select("#"+moduleId).select(".game-dropdown");
   var categoryDropdown = d3.select("#"+moduleId).select(".category-dropdown");
-  categoryDropdown.selectAll("option").remove();
-  categoryDropdown.append("option")
-    .property("value","0")
-    .text("N/A");
 
   d3.json(`https://www.speedrun.com/api/v1/games/${gameDropdown.property("value")}/categories`, function(data) {
     categoryDropdown.selectAll("option")
@@ -233,7 +235,21 @@ function initModule(){
     .attr("class","game-dropdown")
     .append("option")
       .property("value","0")
-      .text("None");
+      .text("None")
+      .on("change", function() {
+        console.log("Game selection changed in "+moduleId);
+        var categoryDropdown = d3.select("#"+moduleId).select(".category-dropdown");
+        categoryDropdown.selectAll("option").remove();
+        categoryDropdown.append("option")
+          .property("value","0")
+          .text("N/A");
+        var levelDropdown = d3.select("#"+moduleId).select(".category-dropdown");
+        levelDropdown.selectAll("option").remove();
+        levelDropdown.append("option")
+            .property("value","0")
+            .text("N/A");
+        populateCategoryDropdown(moduleId);
+      });
     
   // Category
   module.append("p")
@@ -242,8 +258,12 @@ function initModule(){
     .attr("class", "category-dropdown")
     .append("option")
       .property("value","0")
-      .text("N/A");
-  
+      .text("N/A")
+      .on("change", function() {
+        console.log("Category selection changed in "+moduleId);
+        handleCategorySelect(this, moduleId);
+      });
+
   // Level
   module.append("p")
     .text("Level:");
@@ -251,12 +271,21 @@ function initModule(){
     .attr("class", "level-dropdown")
     .append("option")
       .property("value","0")
-      .text("N/A");
+      .text("N/A")
+      .on("change", function() {
+        console.log("level selection changed in "+moduleId);
+        populateGraph();
+      });
 
   // Color
-  module.append("circle")
+  module.append("svg")
+    .attr("height","20")
+    .attr("width","20")
+    .append("circle")
     .style("fill", colors[legendSize-1])
-    .attr("r","3");
+    .attr("r","10")
+    .attr("cx","10")
+    .attr("cy","10");
 
   // Remove Button
   module.append("button")
@@ -269,23 +298,15 @@ function initModule(){
   // Add games to dropdown
   populateGameDropdown(moduleId);
 
+  //
   module.select(".game-dropdown")
-    .on("change", function() {
-      console.log("Game selection changed in "+moduleId);
-      populateCategoryDropdown(moduleId);
-    });
+    
 
   module.select(".category-dropdown")
-    .on("change", function() {
-      console.log("Category selection changed in "+moduleId);
-      handleCategorySelect(this, moduleId);
-    });
+    
 
   module.select(".level-dropdown")
-    .on("change", function() {
-      console.log("level selection changed in "+moduleId);
-      populateGraph()
-    });
+    
 };
 
 function removeModule(moduleId){
