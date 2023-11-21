@@ -20,8 +20,12 @@ button {
 
 .date-box {
     display: inline-block;
-    height: 50%;
-    width: 5%;
+    resize: none;
+    text-align: center;
+}
+
+.time-box {
+    display: inline-block;
     resize: none;
     text-align: center;
 }

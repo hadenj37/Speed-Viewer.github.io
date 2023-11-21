@@ -11,7 +11,7 @@
     <div id="legend">
         <h1>Legend</h1>
         <p>Search games:</p>
-        <textarea id="game-searchbar"></textarea>
+        <textarea id="game-searchbar" rows="1"></textarea>
         <Button onclick="initModule()">Add Game</Button>
     </div>
     <div id="graph-pane">
@@ -33,10 +33,10 @@
         <p>/</p>
         <textarea class="date-box" id="day2" rows="1" cols="5" maxlength="2">31</textarea>
         <p>/</p>
-        <textarea class="date-box" id="year2" rows="1" cols="5" maxlength="4">2023</textarea>
+        <textarea class="date-box" id="year2" rows="1" cols="5" maxlength="4" minlength="4">2023</textarea>
         <br>
         <p>Maximum runtime (in milliseconds):</p>
-        <textarea id="time-box" rows="1" cols="5"></textarea>
+        <textarea class="date-box" rows="1" cols="5"></textarea>
     </div>
     <script type="text/javascript" src="SpeedrunFunctions.js" onload="addAxes()"></script>
 </body>

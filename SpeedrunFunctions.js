@@ -1,14 +1,14 @@
 // some functionality adapted from https://d3-graph-gallery.com/graph/scatter_basic.html
 
 // Globals
-const colors = ["#ff0000","#00ff00","#0000ff"];
+const colors = ["#ff0000","#00ff00","#0000ff","#ffff00","#ff00ff","#00ffff","#abcdef","#fedcab"];
 var legendSize = 0;
 var minDate;
 var maxDate;
 var maxMillisec = 36000;
-const margin = {top: 10, right: 30, bottom: 30, left: 60},
-  width = 1000 - margin.left - margin.right,
-  height = 500 - margin.top - margin.bottom;
+const margin = {top: 10, right: 30, bottom: 60, left: 90},
+  width = 1050 - margin.left - margin.right,
+  height = 550 - margin.top - margin.bottom;
 
 function addAxes() {
   // append the svg object to the body of the page
@@ -72,7 +72,7 @@ function addAxes() {
     .domain([minDate, maxDate])
     .range([0, width]);
   svg.append("g")
-    .attr("transform", "translate(0," + height + ")")
+    .attr("transform", `translate(0,${height})`)
     .call(d3.axisBottom(x));
 
   // Add Y axis
@@ -81,6 +81,18 @@ function addAxes() {
     .range([height, 0]);
   svg.append("g")
     .call(d3.axisLeft(y));
+
+  // Add x-axis label
+  svg.append("text")
+    .attr("text-anchor", "middle")
+    .attr("transform", `translate(100, ${height+35})`)
+    .text("Date Submitted");
+
+  // Add y-axis label
+  svg.append("text")
+    .attr("text-anchor", "middle")
+    .attr("transform", "translate(-50, 150)rotate(-90)")
+    .text("Run Time (ms)");
 };
 
 function refreshAxes(){
@@ -94,6 +106,9 @@ function refreshAxes(){
 };
 
 function populateGraph(){
+  // Clear Axes
+  d3.select("#graph").selectAll("circle").remove();
+  
   // Get modules from legend
   const legendModules = d3.selectAll(".legend-module");
 
@@ -122,9 +137,9 @@ function populateGraph(){
       apiString += `/category/${categoryDropdown.property("value")}`;
     }
 
-    //Read the data
+    // Read the data
     d3.json(apiString, function(data) {
-      console.log("making API call: "+apiString);
+      console.log(`making API call: ${apiString}`);
 
       // Add points to graph
       var graph = d3.select("#graph");
@@ -135,14 +150,16 @@ function populateGraph(){
         .append("circle")
           .attr("cx", d => x(new Date(d.run.submitted)))
           .attr("cy", d => y(d.run.times.primary_t))
-          .attr("r", 1.5)
+          .attr("r", 3)
+          .attr("stroke","black")
+          .attr("stroke-width","1")
           .attr("runID", d => (d.run.id) )
           .style("fill", colors[index])
           .on("click", function (d){
             // Display specfic run information to the textbox
             var textBox = document.getElementById("data-box");
             textBox.value = "Run ID: " + d.run.id;
-            textBox.value = "Leaderboard Place: " + d.place;
+            textBox.value += "Leaderboard Place: " + d.place;
             textBox.value += "\nRun Submitted:" + d.run.submitted;
           });
     })
@@ -150,7 +167,7 @@ function populateGraph(){
 };
 
 // called upon module creation
-function populateGameDropdown(moduleId) {
+function populateGameDropdown(module) {
   var apiString = "https://www.speedrun.com/api/v1/games?_bulk=yes&max=1000";
   var searchText = d3.select("#game-searchbar").property("value");
   if(searchText.length > 0){
@@ -158,9 +175,9 @@ function populateGameDropdown(moduleId) {
   }
 
   d3.json(apiString, function(data) {
+    console.log(`making API call: ${apiString}`);
     // populate game dropdown with game titles & ids
-    d3.select("#"+moduleId)
-      .select(".game-dropdown")
+    module.select(".game-dropdown")
       .selectAll("option")
       .data(data.data)
       .enter()
@@ -172,11 +189,12 @@ function populateGameDropdown(moduleId) {
 
 // dependent on game chosen, per API docs
 // called by game-dropdown onchange
-function populateCategoryDropdown(moduleId) {
-  var gameDropdown = d3.select("#"+moduleId).select(".game-dropdown");
-  var categoryDropdown = d3.select("#"+moduleId).select(".category-dropdown");
-
-  d3.json(`https://www.speedrun.com/api/v1/games/${gameDropdown.property("value")}/categories`, function(data) {
+function populateCategoryDropdown(module) {
+  var gameDropdown = module.select(".game-dropdown");
+  var categoryDropdown = module.select(".category-dropdown");
+  var apiString = `https://www.speedrun.com/api/v1/games/${gameDropdown.property("value")}/categories`;
+  d3.json(apiString, function(data) {
+    console.log(`making API call: ${apiString}`);  
     categoryDropdown.selectAll("option")
       .data(data.data)
       .enter()
@@ -187,15 +205,16 @@ function populateCategoryDropdown(moduleId) {
   });
 };
 
-function populateLevelDropdown(moduleId) {
-  var gameDropdown = d3.select("#"+moduleId).select(".game-dropdown");
-  var levelDropdown = d3.select("#"+moduleId).select(".level-dropdown");
+function populateLevelDropdown(module) {
+  var gameDropdown = module.select(".game-dropdown");
+  var levelDropdown = module.select(".level-dropdown");
   levelDropdown.selectAll("option").remove();
   levelDropdown.append("option")
     .property("value","0")
     .text("N/A");
-
-  d3.json(`https://www.speedrun.com/api/v1/games/${gameDropdown.property("value")}/levels`, function(data) {
+  var apiString = `https://www.speedrun.com/api/v1/games/${gameDropdown.property("value")}/levels`;
+  d3.json(apiString, function(data) {
+    console.log(`making API call: ${apiString}`);
     levelDropdown.selectAll("option")
       .data(data.data)
       .enter()
@@ -205,9 +224,9 @@ function populateLevelDropdown(moduleId) {
   });
 };
 
-function handleCategorySelect(dropdown, moduleId){
+function handleCategorySelect(dropdown, module){
   if(dropdown.options[dropdown.selectedIndex].type == "per-level"){
-    populateLevelDropdown(moduleId);
+    populateLevelDropdown(module);
   }else{
     populateGraph();
   }
@@ -233,49 +252,57 @@ function initModule(){
     .text("Game:");
   module.append("select")
     .attr("class","game-dropdown")
-    .append("option")
-      .property("value","0")
-      .text("None")
-      .on("change", function() {
-        console.log("Game selection changed in "+moduleId);
-        var categoryDropdown = d3.select("#"+moduleId).select(".category-dropdown");
-        categoryDropdown.selectAll("option").remove();
-        categoryDropdown.append("option")
+    .on("change", function() {
+      console.log(`Game selection changed in ${module.attr("id")}`);
+      var categoryDropdown = module.select(".category-dropdown");
+      categoryDropdown.selectAll("option").remove();
+      categoryDropdown.append("option")
+        .property("value","0")
+        .text("N/A");
+      var levelDropdown = module.select(".level-dropdown");
+      levelDropdown.selectAll("option").remove();
+      levelDropdown.append("option")
           .property("value","0")
           .text("N/A");
-        var levelDropdown = d3.select("#"+moduleId).select(".category-dropdown");
-        levelDropdown.selectAll("option").remove();
-        levelDropdown.append("option")
-            .property("value","0")
-            .text("N/A");
-        populateCategoryDropdown(moduleId);
-      });
+      populateCategoryDropdown(module);
+    })
+    .append("option")
+      .property("value","0")
+      .text("None");
     
   // Category
   module.append("p")
     .text("Category:");
   module.append("select")
     .attr("class", "category-dropdown")
+    .on("change", function() {
+      console.log(`Category selection changed in ${module.attr("id")}`);
+      handleCategorySelect(this, module);
+    })
     .append("option")
       .property("value","0")
-      .text("N/A")
-      .on("change", function() {
-        console.log("Category selection changed in "+moduleId);
-        handleCategorySelect(this, moduleId);
-      });
+      .text("N/A");
 
   // Level
   module.append("p")
     .text("Level:");
   module.append("select")
     .attr("class", "level-dropdown")
+    .on("change", function() {
+      console.log(`Level selection changed in ${module.attr("id")}`);
+      populateGraph();
+    })
     .append("option")
       .property("value","0")
-      .text("N/A")
-      .on("change", function() {
-        console.log("level selection changed in "+moduleId);
-        populateGraph();
-      });
+      .text("N/A");
+
+  // Remove Button
+  module.append("button")
+    .text("Remove")
+    .on("click", function(){
+      console.log(`Removing ${module.attr("id")}`);
+      removeModule(module);
+    });
 
   // Color
   module.append("svg")
@@ -287,38 +314,19 @@ function initModule(){
     .attr("cx","10")
     .attr("cy","10");
 
-  // Remove Button
-  module.append("button")
-    .text("Remove")
-    .on("click", function(){
-      console.log("Removing  "+moduleId);
-      removeModule(moduleId);
-    });
-
   // Add games to dropdown
-  populateGameDropdown(moduleId);
-
-  //
-  module.select(".game-dropdown")
-    
-
-  module.select(".category-dropdown")
-    
-
-  module.select(".level-dropdown")
-    
+  populateGameDropdown(module);
 };
 
-function removeModule(moduleId){
+function removeModule(module){
   // Remove module in question
-  var module = d3.select("#"+moduleId);
   module.remove();
   legendSize -= 1;
 
   var remainingModules = d3.selectAll(".legend-module");
   remainingModules.each(function(d,i){
     var currentModule = d3.select(this);
-    currentModule.attr("id","module"+(i+1).toString());
+    currentModule.attr("id",`module${(i+1)}`);
     currentModule.select("circle").style("fill",colors[i]);
   });
 
