@@ -5,7 +5,7 @@ const colors = ["#ff0000","#00ff00","#0000ff","#ffff00","#ff00ff","#00ffff","#ab
 var legendSize = 0;
 var minDate;
 var maxDate;
-var maxMillisec = 36000;
+var maxSec = 36000;
 const margin = {top: 10, right: 30, bottom: 60, left: 90},
   width = 1050 - margin.left - margin.right,
   height = 550 - margin.top - margin.bottom;
@@ -67,6 +67,17 @@ function addAxes() {
   maxDate = new Date(maxYear.value+"-"+maxMonth.value+"-"+maxDay.value);
   console.log("Date range is from "+minDate.toISOString()+" to "+maxDate.toISOString());
 
+  /*if(!(d3.select("#fit-checkbox").property("checked"))){*/
+    var timeBox = document.getElementById("time-box");
+    try {
+      maxSec = parseFloat(timeBox.value);
+      console.log(`maxSec is ${maxSec}`);
+    } catch (error) {
+      console.log(`Could not parse ${maxSec} as a float`)
+      timeBox.value = `${maxSec}`;
+    }
+  /*}*/
+
   // Add X axis
   var x = d3.scaleTime()
     .domain([minDate, maxDate])
@@ -77,7 +88,7 @@ function addAxes() {
 
   // Add Y axis
   var y = d3.scaleLinear()
-    .domain([0, maxMillisec])
+    .domain([0, maxSec])
     .range([height, 0]);
   svg.append("g")
     .call(d3.axisLeft(y));
@@ -85,14 +96,16 @@ function addAxes() {
   // Add x-axis label
   svg.append("text")
     .attr("text-anchor", "middle")
-    .attr("transform", `translate(100, ${height+35})`)
+    .attr("transform", `translate(${width/2}, ${height+40})`)
+    .style("fill","white")
     .text("Date Submitted");
 
   // Add y-axis label
   svg.append("text")
     .attr("text-anchor", "middle")
-    .attr("transform", "translate(-50, 150)rotate(-90)")
-    .text("Run Time (ms)");
+    .attr("transform", `translate(-60, ${height/2})rotate(-90)`)
+    .style("fill","white")
+    .text("Run Time (seconds)");
 };
 
 function refreshAxes(){
@@ -101,7 +114,6 @@ function refreshAxes(){
   if (oldGraph) {
     graphPane.removeChild(oldGraph);
     addAxes();
-    populateGraph();
   }
 };
 
@@ -112,13 +124,50 @@ function populateGraph(){
   // Get modules from legend
   const legendModules = d3.selectAll(".legend-module");
 
+  // Get filters
+  /*if(d3.select("#fit-checkbox").property("checked") && (legendSize > 0)){
+    maxSec = 0;
+    legendModules.each(function() {
+      // Get game & cateory & level
+      const gameDropdown = d3.select(this).select(".game-dropdown");
+      const categoryDropdown = d3.select(this).select(".category-dropdown");
+      const levelDropdown = d3.select(this).select(".level-dropdown");
+  
+      // Build API call string
+      var apiString = `https://www.speedrun.com/api/v1/leaderboards/${gameDropdown.property("value")}`;
+      if(levelDropdown.property("value") != "0"){
+        apiString += `/level/${levelDropdown.property("value")}`;
+        if(categoryDropdown.property("value") != "0"){
+          apiString += `/${categoryDropdown.property("value")}`;
+        }
+      }else if(categoryDropdown.property("value") != "0"){
+        apiString += `/category/${categoryDropdown.property("value")}`;
+      }
+  
+      // Read the data
+      d3.json(apiString, function(data) {
+        console.log(`making API call: ${apiString}`);
+        var localMax = d3.max(data.data.runs, function(d) { return parseFloat(d.run.times.primary_t); });
+        if(localMax > maxSec){
+          console.log(`${localMax} is greater than ${maxSec}`)
+          maxSec = localMax;
+          d3.select("#time-box").property("value",`${maxSec}`);
+          refreshAxes();
+        } else {console.log(`${localMax} is less than or equal to ${maxSec}`);}
+      });
+    });
+    console.log(`maxSec is ${maxSec}`);
+    d3.select(".time-box").property("value",`${maxSec}`);
+  }*/
+  
+  // Set Scales
   var x = d3.scaleTime()
     .domain([minDate, maxDate])
     .range([0, width]);
   var y = d3.scaleLinear()
-    .domain([0, maxMillisec])
+    .domain([0, maxSec])
     .range([height, 0]);
-
+  
   // Add data for each module
   legendModules.each(function(d, index) {
     // Get game & cateory & level
@@ -129,7 +178,7 @@ function populateGraph(){
     // Build API call string
     var apiString = `https://www.speedrun.com/api/v1/leaderboards/${gameDropdown.property("value")}`;
     if(levelDropdown.property("value") != "0"){
-      apiString += `/levels/${levelDropdown.property("value")}`;
+      apiString += `/level/${levelDropdown.property("value")}`;
       if(categoryDropdown.property("value") != "0"){
         apiString += `/${categoryDropdown.property("value")}`;
       }
@@ -153,14 +202,13 @@ function populateGraph(){
           .attr("r", 3)
           .attr("stroke","black")
           .attr("stroke-width","1")
-          .attr("runID", d => (d.run.id) )
           .style("fill", colors[index])
           .on("click", function (d){
             // Display specfic run information to the textbox
             var textBox = document.getElementById("data-box");
-            textBox.value = "Run ID: " + d.run.id;
-            textBox.value += "Leaderboard Place: " + d.place;
-            textBox.value += "\nRun Submitted:" + d.run.submitted;
+            textBox.value = `\nLeaderboard Place: ${d.place}`;
+            textBox.value += `\nRuntime: ${d.run.times.primary}`
+            textBox.value += `\nRun Submitted: ${d.run.submitted.toString()}`;
           });
     })
   });
@@ -171,14 +219,14 @@ function populateGameDropdown(module) {
   var apiString = "https://www.speedrun.com/api/v1/games?_bulk=yes&max=1000";
   var searchText = d3.select("#game-searchbar").property("value");
   if(searchText.length > 0){
-    apiString += `&name=${searchText}&orderby=similarity`;
+    apiString += `&name=${searchText}`;
   }
 
   d3.json(apiString, function(data) {
     console.log(`making API call: ${apiString}`);
     // populate game dropdown with game titles & ids
     module.select(".game-dropdown")
-      .selectAll("option")
+      .selectAll(".apiOpt")
       .data(data.data)
       .enter()
       .append("option")
@@ -195,7 +243,7 @@ function populateCategoryDropdown(module) {
   var apiString = `https://www.speedrun.com/api/v1/games/${gameDropdown.property("value")}/categories`;
   d3.json(apiString, function(data) {
     console.log(`making API call: ${apiString}`);  
-    categoryDropdown.selectAll("option")
+    categoryDropdown.selectAll(".apiOpt")
       .data(data.data)
       .enter()
       .append("option")
@@ -215,7 +263,7 @@ function populateLevelDropdown(module) {
   var apiString = `https://www.speedrun.com/api/v1/games/${gameDropdown.property("value")}/levels`;
   d3.json(apiString, function(data) {
     console.log(`making API call: ${apiString}`);
-    levelDropdown.selectAll("option")
+    levelDropdown.selectAll(".apiOpt")
       .data(data.data)
       .enter()
       .append("option")

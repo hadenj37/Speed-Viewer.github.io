@@ -19,7 +19,7 @@
     </div>
     <textarea id="data-box" rows="7" ></textarea>
     <div id="filter-panel">
-        <Button onclick="refreshAxes()">Refresh Graph</Button>
+        <Button onclick="refreshAxes(); populateGraph();">Refresh Graph</Button>
         <h3>Date Range</h3>
         <p>from</p>
         <textarea class="date-box" id="month1" rows="1" cols="5" maxlength="2">01</textarea>
@@ -35,8 +35,10 @@
         <p>/</p>
         <textarea class="date-box" id="year2" rows="1" cols="5" maxlength="4" minlength="4">2023</textarea>
         <br>
-        <p>Maximum runtime (in milliseconds):</p>
-        <textarea class="date-box" rows="1" cols="5"></textarea>
+        <p>Maximum runtime (in seconds):</p>
+        <textarea id="time-box" rows="1" cols="5">36000</textarea>
+        <!--<input type="checkbox" id="fit-checkbox">
+        <p>Fit to data</p>-->
     </div>
     <script type="text/javascript" src="SpeedrunFunctions.js" onload="addAxes()"></script>
 </body>
