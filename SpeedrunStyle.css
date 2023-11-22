@@ -11,6 +11,17 @@ div {
 
 p {
     display: inline-block;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+h3 {
+    margin-top: 7px;
+    margin-bottom: 7px;
+}
+
+textarea {
+    resize: none;
 }
 
 button {
@@ -20,11 +31,12 @@ button {
 
 .date-box {
     display: inline-block;
-    height: 50%;
-    width: 5%;
-    resize: none;
     text-align: center;
-    max-lines: 1;
+}
+
+#time-box {
+    display: inline-block;
+    text-align: center;
 }
 
 #legend {
@@ -41,17 +53,16 @@ button {
 }
 
 #data-box {
-    width: 32%;
-    height: 33%;  
-    max-height: 33%;
+    display: inline-block;
 }
 
-#date-panel {
+#filter-panel {
     background-color: #444444;
     color: white;
     max-height: 33%;
     width: 67%;
     text-align: right;
+    justify-content: space-between;
     display: inline-block;
     padding: 10px;
 }
