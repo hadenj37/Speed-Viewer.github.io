@@ -18,6 +18,7 @@ function addAxes() {
       .attr("height", height + margin.top + margin.bottom)
       .attr("id","graph")
     .append("g")
+      .attr("id","plot")  
       .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
@@ -84,6 +85,7 @@ function addAxes() {
     .range([0, width]);
   svg.append("g")
     .attr("transform", `translate(0,${height})`)
+    .attr("class","axis")
     .call(d3.axisBottom(x));
 
   // Add Y axis
@@ -91,6 +93,7 @@ function addAxes() {
     .domain([0, maxSec])
     .range([height, 0]);
   svg.append("g")
+    .attr("class","axis")
     .call(d3.axisLeft(y));
 
   // Add x-axis label
@@ -124,7 +127,7 @@ function populateGraph(){
   // Get modules from legend
   const legendModules = d3.selectAll(".legend-module");
 
-  // Get filters
+  //--Attempt at fitting to data--//
   /*if(d3.select("#fit-checkbox").property("checked") && (legendSize > 0)){
     maxSec = 0;
     legendModules.each(function() {
@@ -192,16 +195,16 @@ function populateGraph(){
 
       // Add points to graph
       var graph = d3.select("#graph");
-      graph.append('g')
-        .selectAll("circle")
-        .data(data.data.runs)
+      graph.select('#plot')
+        .selectAll(`.data${index}`)
+        .data(data.data.runs.filter(d => {return (minDate <= new Date(d.run.submitted) && new Date(d.run.submitted) <= maxDate && d.run.times.primary_t <= maxSec) }))
         .enter()
         .append("circle")
           .attr("cx", d => x(new Date(d.run.submitted)))
           .attr("cy", d => y(d.run.times.primary_t))
           .attr("r", 3)
           .attr("stroke","black")
-          .attr("stroke-width","1")
+          .attr("stroke-width","0.4")
           .style("fill", colors[index])
           .on("click", function (d){
             // Display specfic run information to the textbox
@@ -378,5 +381,5 @@ function removeModule(module){
     currentModule.select("circle").style("fill",colors[i]);
   });
 
-  //refreshAxes();
+  populateGraph();
 };
