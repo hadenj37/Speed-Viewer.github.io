@@ -204,7 +204,7 @@ function populateGraph(){
           .attr("cy", d => y(d.run.times.primary_t))
           .attr("r", 3)
           .attr("stroke","black")
-          .attr("stroke-width","1")
+          .attr("stroke-width","0.4")
           .style("fill", colors[index])
           .on("click", function (d){
             // Display specfic run information to the textbox
