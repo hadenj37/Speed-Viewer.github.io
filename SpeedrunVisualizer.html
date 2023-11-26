@@ -19,7 +19,9 @@
     </div>
     <textarea id="data-box" rows="7" ></textarea>
     <div id="filter-panel">
-        <Button onclick="refreshAxes(); populateGraph();">Refresh Graph</Button>
+        <Button onclick="refreshAxes(); populateGraph(); clearTextBox();">Refresh Graph</Button>
+        <Button onclick="decreaseY();">Decrease Maximum y-value</Button>
+        <Button onclick="increaseY();">Increase Maximum y-value</Button>
         <h3>Date Range</h3>
         <p>from</p>
         <textarea class="date-box" id="month1" rows="1" cols="5" maxlength="2">01</textarea>

@@ -6,6 +6,7 @@ var legendSize = 0;
 var minDate;
 var maxDate;
 var maxSec = 36000;
+var textBox = document.getElementById("data-box");
 const margin = {top: 10, right: 30, bottom: 60, left: 90},
   width = 1050 - margin.left - margin.right,
   height = 550 - margin.top - margin.bottom;
@@ -69,14 +70,14 @@ function addAxes() {
   console.log("Date range is from "+minDate.toISOString()+" to "+maxDate.toISOString());
 
   /*if(!(d3.select("#fit-checkbox").property("checked"))){*/
-    var timeBox = document.getElementById("time-box");
+    /*var timeBox = document.getElementById("time-box");
     try {
       maxSec = parseFloat(timeBox.value);
       console.log(`maxSec is ${maxSec}`);
     } catch (error) {
       console.log(`Could not parse ${maxSec} as a float`)
       timeBox.value = `${maxSec}`;
-    }
+    }*/
   /*}*/
 
   // Add X axis
@@ -111,6 +112,7 @@ function addAxes() {
     .text("Run Time (seconds)");
 };
 
+
 function refreshAxes(){
   var graphPane = document.getElementById("graph-pane");
   var oldGraph = document.getElementById("graph");
@@ -118,6 +120,15 @@ function refreshAxes(){
     graphPane.removeChild(oldGraph);
     addAxes();
   }
+};
+
+
+// Clear text box when Refesh Button is pressed
+
+function clearTextBox(){
+
+  textBox.value = '';
+
 };
 
 function populateGraph(){
@@ -207,14 +218,52 @@ function populateGraph(){
           .attr("stroke-width","0.4")
           .style("fill", colors[index])
           .on("click", function (d){
+
+            //  Reset text box
+            textBox.value = '';
+
             // Display specfic run information to the textbox
-            var textBox = document.getElementById("data-box");
+            
             textBox.value = `\nLeaderboard Place: ${d.place}`;
             textBox.value += `\nRuntime: ${d.run.times.primary}`
             textBox.value += `\nRun Submitted: ${d.run.submitted.toString()}`;
           });
     })
   });
+};
+
+function decreaseY() {
+
+  maxSec -= 1000;
+
+  if(maxSec < 0) {
+
+    maxSec = 0;
+  }
+
+  d3.selectAll("#graph").remove();
+  addAxes();
+  populateGraph();
+  
+  
+
+};
+
+function increaseY() {
+
+  maxSec += 1000;
+
+  if(maxSec > 36000) {
+
+    maxSec = 36000;
+  }
+  
+  d3.selectAll("#graph").remove();
+  addAxes();
+  populateGraph();
+  
+  
+
 };
 
 // called upon module creation
