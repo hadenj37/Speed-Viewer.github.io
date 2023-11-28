@@ -10,68 +10,71 @@
 </head>
 <body class="bg-gray-400    ">
     <nav class="bg-blue-500 p-5">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center">
-                <a href="#" class="text-white font-bold text-lg">Speed Runners</a>
-            </div>
-            <div class="flex items-center space-x-4">
+        <div class="container mx-auto flex justify-center items-center">
+            <p class="text-white font-bold text-4xl">Speed-Viewer</p>
+            <!-- <div class="flex items-center text-center">
+                <p class="text-white font-bold text-lg">Speed Runners</p>
+            </div> -->
+            <!-- <div class="flex items-center space-x-4">
                 <a href="#something" class="text-white hover:text-gray-200">Home</a>
                 <a href="#something" class="text-white hover:text-gray-200">About</a>
                 <a href="#something" class="text-white hover:text-gray-200">Services</a>
                 <a href="#something" class="text-white hover:text-gray-200">Contact</a>
-            </div>
+            </div> -->
         </div>
     </nav>
 
-<div id="legend" class="max-w-2xl mx-auto py-8">
+<div id="legend" class="max-w-2xl py-8">
     <h1 class="text-3xl font-bold mb-4">Legend</h1>
     <div class="flex items-center space-x-2 mb-4">
         <p class="text-lg">Search games:</p>
-        <textarea id="game-searchbar" rows="1" class="border rounded-md px-2 py-1"></textarea>
+        <textarea id="game-searchbar" rows="1" class="border rounded-md px-2 py-1 resize-none"></textarea>
         <button onclick="initModule()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md">Add Game</button>
     </div>
 </div>
 
 <!-- Graph Section -->
-<div id="graph-pane-" class="max-w-2xl mx-auto py-8">
+<div id="graph-pane-" class="max-w-2xl py-8">
     <h1 class="text-3xl font-bold mb-4">Graph</h1>
         <div id="graph-pane"></div>
 </div>
 
 <div class="flex justify-between items-center mb-8">
-    <div class="w-3/5">
+    <div class="w-1/5 items-right">
         <button onclick="refreshAxes(); populateGraph();" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mr-4">Refresh Graph</button>
         <h3 class="text-lg font-semibold mb-1">Date Range</h3>
         <div class="flex items-center mb-4">
             <p class="mr-1">from</p>
-            <textarea class="date-box" id="month1" rows="1" cols="2" maxlength="2">01</textarea>
+            <textarea class="date-box resize-none text-center" id="month1" rows="1" cols="2" maxlength="2">01</textarea>
             <p class="mx-1">/</p>
-            <textarea class="date-box" id="day1" rows="1" cols="2" maxlength="2">01</textarea>
+            <textarea class="date-box resize-none text-center" id="day1" rows="1" cols="2" maxlength="2">01</textarea>
             <p class="mx-1">/</p>
-            <textarea class="date-box" id="year1" rows="1" cols="4" maxlength="4">16</textarea>
+            <textarea class="date-box resize-none text-center" id="year1" rows="1" cols="4" maxlength="4">16</textarea>
         </div>
         <div class="flex items-center">
             <p class="mr-1">to</p>
-            <textarea class="date-box" id="month2" rows="1" cols="2" maxlength="2">12</textarea>
+            <textarea class="date-box resize-none text-center" id="month2" rows="1" cols="2" maxlength="2">12</textarea>
             <p class="mx-1">/</p>
-            <textarea class="date-box" id="day2" rows="1" cols="2" maxlength="2">31</textarea>
+            <textarea class="date-box resize-none text-center" id="day2" rows="1" cols="2" maxlength="2">31</textarea>
             <p class="mx-1">/</p>
-            <textarea class="date-box" id="year2" rows="1" cols="4" maxlength="4" minlength="4">2023</textarea>
+            <textarea class="date-box resize-none text-center" id="year2" rows="1" cols="4" maxlength="4" minlength="4">2023</textarea>
         </div>
     </div>
     <div class="w-2/5">
         <label for="time-box" class="block mb-2">Maximum runtime (in seconds):</label>
         <!-- Updated input range with a range from 0 to 1,000,000 -->
-        <input type="range" id="time-box" name="time-box" min="0" max="1000000" step="1"
-               class="w-full bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring focus:border-blue-300"
-               value="36000">
+        <input type="range" id="time-box" name="time-box" min="0" max="36000" step="100"
+               class="w-full bg-white border border-gray-300 rounded-md py-2 px-0 focus:outline-none focus:ring focus:border-blue-300"
+               value="36000"
+               onchange="refreshAxes(); populateGraph(); d3.select('#data-box')">
         <div class="flex justify-between mt-2">
             <span>0</span>
-            <span>1,000,000</span>
+            <span>36,000</span>
         </div>
         <!-- Display the chosen value dynamically -->
         <p class="mt-2 text-lg" id="chosen-value"></p>
     </div>
+    <textarea id="data-box" class="resize-none w-2/5 h-max"></textarea>
 </div>
 <!-- JavaScript Section -->
 <script type="text/javascript" src="SpeedrunFunctions.js" onload="addAxes()"></script>
