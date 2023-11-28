@@ -70,14 +70,14 @@ function addAxes() {
   console.log("Date range is from "+minDate.toISOString()+" to "+maxDate.toISOString());
 
   /*if(!(d3.select("#fit-checkbox").property("checked"))){*/
-    /*var timeBox = document.getElementById("time-box");
+    var timeBox = document.getElementById("time-box");
     try {
       maxSec = parseFloat(timeBox.value);
       console.log(`maxSec is ${maxSec}`);
     } catch (error) {
       console.log(`Could not parse ${maxSec} as a float`)
       timeBox.value = `${maxSec}`;
-    }*/
+    }
   /*}*/
 
   // Add X axis
