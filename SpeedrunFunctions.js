@@ -252,11 +252,6 @@ function decreaseY() {
 function increaseY() {
 
   maxSec += 1000;
-
-  if(maxSec > 36000) {
-
-    maxSec = 36000;
-  }
   
   d3.selectAll("#graph").remove();
   addAxes();
