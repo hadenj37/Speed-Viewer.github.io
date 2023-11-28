@@ -383,3 +383,20 @@ function removeModule(module){
 
   populateGraph();
 };
+
+
+// This is js for the slider (may want to remove later if not using slider)
+// Get the slider element
+const timeBox = document.getElementById('time-box');
+
+// Get the element to display chosen value
+const chosenValueDisplay = document.getElementById('chosen-value');
+
+// Add an event listener for 'input' event on the slider
+timeBox.addEventListener('input', function() {
+  // Get the current value of the slider
+  const chosenValue = parseInt(timeBox.value);
+
+  // Display the chosen value dynamically
+  chosenValueDisplay.textContent = `Chosen value: ${chosenValue.toLocaleString()}`;
+});
