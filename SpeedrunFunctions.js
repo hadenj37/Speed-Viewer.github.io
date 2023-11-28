@@ -293,7 +293,9 @@ function initModule(){
   var legend = d3.select("#legend");
   legend.append("div")
       .attr("id",moduleId)
-      .attr("class","legend-module")
+      .attr("class","legend-module inline-block")
+      .style("background-color","#777777")
+      .style("padding","3px");
 
   // Add elements to module
   var module = d3.select("#"+moduleId);
