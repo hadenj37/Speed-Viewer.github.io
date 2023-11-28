@@ -1,45 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="SpeedrunStyle.css" />
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://d3js.org/d3.v4.js"></script>
-    <title>Speedrun Vizualizer</title>
+    <title>Speedrun Visualizer</title>
 </head>
-<body>
-    <div id="legend">
-        <h1>Legend</h1>
-        <p>Search games:</p>
-        <textarea id="game-searchbar" rows="1"></textarea>
-        <Button onclick="initModule()">Add Game</Button>
+<body class="bg-gray-400    ">
+    <nav class="bg-blue-500 p-5">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="#" class="text-white font-bold text-lg">Speed Runners</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="#something" class="text-white hover:text-gray-200">Home</a>
+                <a href="#something" class="text-white hover:text-gray-200">About</a>
+                <a href="#something" class="text-white hover:text-gray-200">Services</a>
+                <a href="#something" class="text-white hover:text-gray-200">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+<div id="legend" class="max-w-2xl mx-auto py-8">
+    <h1 class="text-3xl font-bold mb-4">Legend</h1>
+    <div class="flex items-center space-x-2 mb-4">
+        <p class="text-lg">Search games:</p>
+        <textarea id="game-searchbar" rows="1" class="border rounded-md px-2 py-1"></textarea>
+        <button onclick="initModule()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md">Add Game</button>
     </div>
-    <div id="graph-pane">
-        <h1>Graph</h1>
+</div>
+
+<!-- Graph Section -->
+<div id="graph-pane-" class="max-w-2xl mx-auto py-8">
+    <h1 class="text-3xl font-bold mb-4">Graph</h1>
+        <div id="graph-pane"></div>
+</div>
+
+<div class="flex justify-between items-center mb-8">
+    <div class="w-3/5">
+        <button onclick="refreshAxes(); populateGraph();" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mr-4">Refresh Graph</button>
+        <h3 class="text-lg font-semibold mb-1">Date Range</h3>
+        <div class="flex items-center mb-4">
+            <p class="mr-1">from</p>
+            <textarea class="date-box" id="month1" rows="1" cols="2" maxlength="2">01</textarea>
+            <p class="mx-1">/</p>
+            <textarea class="date-box" id="day1" rows="1" cols="2" maxlength="2">01</textarea>
+            <p class="mx-1">/</p>
+            <textarea class="date-box" id="year1" rows="1" cols="4" maxlength="4">16</textarea>
+        </div>
+        <div class="flex items-center">
+            <p class="mr-1">to</p>
+            <textarea class="date-box" id="month2" rows="1" cols="2" maxlength="2">12</textarea>
+            <p class="mx-1">/</p>
+            <textarea class="date-box" id="day2" rows="1" cols="2" maxlength="2">31</textarea>
+            <p class="mx-1">/</p>
+            <textarea class="date-box" id="year2" rows="1" cols="4" maxlength="4" minlength="4">2023</textarea>
+        </div>
     </div>
-    <textarea id="data-box" rows="7" ></textarea>
-    <div id="filter-panel">
-        <Button onclick="refreshAxes(); populateGraph();">Refresh Graph</Button>
-        <h3>Date Range</h3>
-        <p>from</p>
-        <textarea class="date-box" id="month1" rows="1" cols="5" maxlength="2">01</textarea>
-        <p>/</p>
-        <textarea class="date-box" id="day1" rows="1" cols="5" maxlength="2">01</textarea>
-        <p>/</p>
-        <textarea class="date-box" id="year1" rows="1" cols="5" maxlength="4">16</textarea>
-        <br>
-        <p>to</p>
-        <textarea class="date-box" id="month2" rows="1" cols="5" maxlength="2">12</textarea>
-        <p>/</p>
-        <textarea class="date-box" id="day2" rows="1" cols="5" maxlength="2">31</textarea>
-        <p>/</p>
-        <textarea class="date-box" id="year2" rows="1" cols="5" maxlength="4" minlength="4">2023</textarea>
-        <br>
-        <p>Maximum runtime (in seconds):</p>
-        <textarea id="time-box" rows="1" cols="5">36000</textarea>
-        <!--<input type="checkbox" id="fit-checkbox">
-        <p>Fit to data</p>-->
+    <div class="w-2/5">
+        <label for="time-box" class="block mb-2">Maximum runtime (in seconds):</label>
+        <!-- Updated input range with a range from 0 to 1,000,000 -->
+        <input type="range" id="time-box" name="time-box" min="0" max="1000000" step="1"
+               class="w-full bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring focus:border-blue-300"
+               value="36000">
+        <div class="flex justify-between mt-2">
+            <span>0</span>
+            <span>1,000,000</span>
+        </div>
+        <!-- Display the chosen value dynamically -->
+        <p class="mt-2 text-lg" id="chosen-value"></p>
     </div>
-    <script type="text/javascript" src="SpeedrunFunctions.js" onload="addAxes()"></script>
+</div>
+<!-- JavaScript Section -->
+<script type="text/javascript" src="SpeedrunFunctions.js" onload="addAxes()"></script>
 </body>
 </html>
