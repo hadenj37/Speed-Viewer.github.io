@@ -127,7 +127,7 @@ function populateGraph(){
   // Get modules from legend
   const legendModules = d3.selectAll(".legend-module");
 
-  //--Attempt at fitting to data--//
+  {//--Attempt at fitting to data--//
   /*if(d3.select("#fit-checkbox").property("checked") && (legendSize > 0)){
     maxSec = 0;
     legendModules.each(function() {
@@ -161,7 +161,7 @@ function populateGraph(){
     });
     console.log(`maxSec is ${maxSec}`);
     d3.select(".time-box").property("value",`${maxSec}`);
-  }*/
+  }*/}
   
   // Set Scales
   var x = d3.scaleTime()
@@ -209,9 +209,13 @@ function populateGraph(){
           .on("click", function (d){
             // Display specfic run information to the textbox
             var textBox = document.getElementById("data-box");
-            textBox.value = `Leaderboard Place: ${d.place}`;
-            textBox.value += `\nRuntime: ${d.run.times.primary}`
-            textBox.value += `\nRun Submitted: ${d.run.submitted.toString()}`;
+            textBox.value = `Game: ${d3.select(gameDropdown.node().options[gameDropdown.node().selectedIndex]).text()}`;
+            if(levelDropdown.property("value") != "0") { textBox.value += `\nLevel: ${d3.select(levelDropdown.node().options[levelDropdown.node().selectedIndex]).text()}` };
+            textBox.value += `\nCategory: ${d3.select(categoryDropdown.node().options[categoryDropdown.node().selectedIndex]).text()}`;
+            textBox.value += `\nLeaderboard Place: ${d.place}`;
+            textBox.value += `\nRuntime: ${moment.utc((moment.duration(d.run.times.primary)).asMilliseconds()).format('HH:mm:ss')}`
+            textBox.value += `\nRun Submitted: ${moment(d.run.submitted).format('MM/DD/YYYY')}`;
+            textBox.value += `\nWebpage: ${d.run.weblink}`
           });
     })
   });
