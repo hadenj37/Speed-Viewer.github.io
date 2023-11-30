@@ -29,7 +29,7 @@ function addAxes() {
   }else if(minYear.value.length == 2){
     minYear.value = "20"+minYear.value;
   }else if(minYear.value.length != 4){
-    minYear.value = "2016";
+    minYear.value = "2014";
   }
   var maxYear = document.getElementById("year2");
   if(maxYear.value.length == 1){
@@ -37,7 +37,7 @@ function addAxes() {
   }else if(maxYear.value.length == 2){
     maxYear.value = "20"+maxYear.value;
   }else if(maxYear.value.length != 4){
-    maxYear.value = "2016";
+    maxYear.value = "2023";
   }
   var minMonth = document.getElementById("month1");
   if(minMonth.value.length == 1){
@@ -127,7 +127,7 @@ function populateGraph(){
   // Get modules from legend
   const legendModules = d3.selectAll(".legend-module");
 
-  //--Attempt at fitting to data--//
+  {//--Attempt at fitting to data--//
   /*if(d3.select("#fit-checkbox").property("checked") && (legendSize > 0)){
     maxSec = 0;
     legendModules.each(function() {
@@ -161,7 +161,7 @@ function populateGraph(){
     });
     console.log(`maxSec is ${maxSec}`);
     d3.select(".time-box").property("value",`${maxSec}`);
-  }*/
+  }*/}
   
   // Set Scales
   var x = d3.scaleTime()
@@ -209,9 +209,13 @@ function populateGraph(){
           .on("click", function (d){
             // Display specfic run information to the textbox
             var textBox = document.getElementById("data-box");
-            textBox.value = `\nLeaderboard Place: ${d.place}`;
-            textBox.value += `\nRuntime: ${d.run.times.primary}`
-            textBox.value += `\nRun Submitted: ${d.run.submitted.toString()}`;
+            textBox.value = `Game: ${d3.select(gameDropdown.node().options[gameDropdown.node().selectedIndex]).text()}`;
+            if(levelDropdown.property("value") != "0") { textBox.value += `\nLevel: ${d3.select(levelDropdown.node().options[levelDropdown.node().selectedIndex]).text()}` };
+            textBox.value += `\nCategory: ${d3.select(categoryDropdown.node().options[categoryDropdown.node().selectedIndex]).text()}`;
+            textBox.value += `\nLeaderboard Place: ${d.place}`;
+            textBox.value += `\nRuntime: ${moment.utc((moment.duration(d.run.times.primary)).asMilliseconds()).format('HH:mm:ss')}`
+            textBox.value += `\nRun Submitted: ${moment(d.run.submitted).format('MM/DD/YYYY')}`;
+            textBox.value += `\nWebpage: ${d.run.weblink}`
           });
     })
   });
@@ -293,8 +297,9 @@ function initModule(){
   var legend = d3.select("#legend");
   legend.append("div")
       .attr("id",moduleId)
-      .attr("class","legend-module inline-block")
-      .style("background-color","#777777")
+      .attr("class","legend-module inline-block relative")
+      .style("border-color","black")
+      .style("border-width","2px")
       .style("padding","3px");
 
   // Add elements to module
@@ -302,7 +307,8 @@ function initModule(){
 
   // Game
   module.append("p")
-    .text("Game:");
+    .text("Game:")
+    .attr("class","font-bold");
   module.append("select")
     .attr("class","game-dropdown")
     .on("change", function() {
@@ -325,7 +331,8 @@ function initModule(){
     
   // Category
   module.append("p")
-    .text("Category:");
+    .text("Category:")
+    .attr("class","font-bold");
   module.append("select")
     .attr("class", "category-dropdown")
     .on("change", function() {
@@ -338,7 +345,8 @@ function initModule(){
 
   // Level
   module.append("p")
-    .text("Level:");
+    .text("Level:")
+    .attr("class","font-bold");
   module.append("select")
     .attr("class", "level-dropdown")
     .on("change", function() {
@@ -349,24 +357,28 @@ function initModule(){
       .property("value","0")
       .text("N/A");
 
-  // Remove Button
-  module.append("button")
-    .text("Remove")
-    .on("click", function(){
-      console.log(`Removing ${module.attr("id")}`);
-      removeModule(module);
-    });
-
   // Color
-  module.append("svg")
+  /*module.append("svg")
     .attr("height","20")
     .attr("width","20")
     .append("circle")
     .style("fill", colors[legendSize-1])
     .attr("r","10")
     .attr("cx","10")
-    .attr("cy","10");
+    .attr("cy","10");*/
 
+
+  // Remove Button
+  module.append("button")
+      .text("Remove")
+      .attr("class","text-white font-bold py-2 px-4 rounded-md absolute bottom-0 right-0")
+      .style("background-color",colors[legendSize-1])
+      .on("click", function(){
+        console.log(`Removing ${module.attr("id")}`);
+        removeModule(module);
+      });
+
+  
   // Add games to dropdown
   populateGameDropdown(module);
 };

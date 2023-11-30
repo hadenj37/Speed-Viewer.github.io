@@ -6,6 +6,7 @@
     <!-- Include Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <title>Speedrun Visualizer</title>
 </head>
 <body class="bg-gray-400    ">
@@ -24,7 +25,7 @@
         </div>
     </nav>
 
-<div id="legend" class="max-w-2xl py-8">
+<div id="legend" class="max-w-2xl px-2 py-4">
     <h1 class="text-3xl font-bold mb-4">Legend</h1>
     <div class="flex items-center space-x-2 mb-4">
         <p class="text-lg">Search games:</p>
@@ -34,14 +35,14 @@
 </div>
 
 <!-- Graph Section -->
-<div id="graph-pane-" class="max-w-2xl py-8">
+<div id="graph-pane-" class="max-w px-2 py-4">
     <h1 class="text-3xl font-bold mb-4">Graph</h1>
         <div id="graph-pane"></div>
 </div>
 
-<div class="flex justify-between items-center mb-8">
-    <div class="w-1/5 items-right">
-        <button onclick="refreshAxes(); populateGraph();" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mr-4">Refresh Graph</button>
+<div class="flex justify-between items-center">
+    <div class="w-1/6">
+        <button onclick="refreshAxes(); populateGraph(); d3.select('#data-box').property('value','Click on a datapoint for more information.');" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mr-4">Refresh Date</button>
         <h3 class="text-lg font-semibold mb-1">Date Range</h3>
         <div class="flex items-center mb-4">
             <p class="mr-1">from</p>
@@ -49,7 +50,7 @@
             <p class="mx-1">/</p>
             <textarea class="date-box resize-none text-center" id="day1" rows="1" cols="2" maxlength="2">01</textarea>
             <p class="mx-1">/</p>
-            <textarea class="date-box resize-none text-center" id="year1" rows="1" cols="4" maxlength="4">16</textarea>
+            <textarea class="date-box resize-none text-center" id="year1" rows="1" cols="4" maxlength="4">2014</textarea>
         </div>
         <div class="flex items-center">
             <p class="mr-1">to</p>
@@ -60,13 +61,13 @@
             <textarea class="date-box resize-none text-center" id="year2" rows="1" cols="4" maxlength="4" minlength="4">2023</textarea>
         </div>
     </div>
-    <div class="w-2/5">
+    <div class="w-2/5 mr-px">
         <label for="time-box" class="block mb-2">Maximum runtime (in seconds):</label>
         <!-- Updated input range with a range from 0 to 1,000,000 -->
         <input type="range" id="time-box" name="time-box" min="0" max="36000" step="100"
                class="w-full bg-white border border-gray-300 rounded-md py-2 px-0 focus:outline-none focus:ring focus:border-blue-300"
                value="36000"
-               onchange="refreshAxes(); populateGraph(); d3.select('#data-box')">
+               onchange="refreshAxes(); populateGraph(); d3.select('#data-box').property('value','Click on a datapoint for more information.');">
         <div class="flex justify-between mt-2">
             <span>0</span>
             <span>36,000</span>
@@ -74,7 +75,7 @@
         <!-- Display the chosen value dynamically -->
         <p class="mt-2 text-lg" id="chosen-value"></p>
     </div>
-    <textarea id="data-box" class="resize-none w-2/5 h-max"></textarea>
+    <textarea id="data-box" class="resize-none w-2/5 px-1 ml-5 h-32">Click on a datapoint for more information.</textarea>
 </div>
 <!-- JavaScript Section -->
 <script type="text/javascript" src="SpeedrunFunctions.js" onload="addAxes()"></script>
